@@ -1,21 +1,25 @@
 <script>
 export default {
     name: 'Picture',
+    props: {
+        prefix: {
+            type: String,
+            required: true
+        },
+        picutre_counts: {
+            type: Number,
+            required: true
+        },
+        top: {
+            type: String,
+            required: true,
+        }
+    },
     data() {
         return {
-            source: [
-                'src/assets/pic.jpg',
-                'src/assets/pic1.jpg',
-                'src/assets/pic2.jpg',
-                'src/assets/pic3.jpg',
-                'src/assets/pic4.jpg',
-                'src/assets/pic5.jpg',
-                'src/assets/pic6.jpg',
-                'src/assets/pic7.jpg',
-                'src/assets/pic8.jpg',
-                'src/assets/pic9.jpg',
-            ],
+            source: [],
             mid: 0,
+            hover: false,
         }
     },
     methods: {
@@ -56,6 +60,8 @@ export default {
                 let bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2));
                 this.$refs.container.children[bottomIndex].className = 'right';
 
+                this.$refs.container.children[this.checkBorder(leftIndex - 1)].classList.remove('second');
+                this.$refs.container.children[leftIndex].classList.add('second');
                 this.$refs.container.children[leftIndex].classList.remove('top');
                 this.$refs.container.children[this.checkBorder(index + 1)].classList.add('top');
             }
@@ -66,6 +72,8 @@ export default {
                 let bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2) - 1);
                 this.$refs.container.children[bottomIndex].className = 'left';
 
+                this.$refs.container.children[this.checkBorder(rightIndex + 1)].classList.remove('second');
+                this.$refs.container.children[rightIndex].classList.add('second');
                 this.$refs.container.children[rightIndex].classList.remove('top');
                 this.$refs.container.children[this.checkBorder(index - 1)].classList.add('top');
             }
@@ -73,19 +81,21 @@ export default {
             this.$refs.container.children[index].className = 'mid';
             this.setSize(this.$refs.container.children[index], true);
             this.mid = index;
-
-            console.log('-------------------');
-            for (let img of this.$refs.container.children) {
-                console.log(img.className);
-            }
         },
         wheelImg(event) {
             let index = event.deltaY > 0 ? this.checkBorder(this.mid + 1) : this.checkBorder(this.mid - 1);
             this.clickImg(index);
         }
-
     },
     mounted() {
+        this.$refs.container.style.top = `${this.top}px`;
+
+        for (let i = 0; i < this.picutre_counts; i++) {
+            // if (fetch(`./src/assets/${i}.jpg`).status === 404) {
+            //     continue;
+            // }
+            this.source.push(`./src/assets/${this.prefix}/${i}.jpg`);
+        }
         if (this.source.length === 1) {
             this.source.push(this.source[0]);
             this.source.push(this.source[0]);
@@ -98,7 +108,7 @@ export default {
 
         this.$nextTick(() => {
             for (let i = 0; i < this.source.length; i++) {
-                this.setSize(this.$refs.container.children[i], i === this.mid);
+                this.$refs.container.children[i].onload = () => this.setSize(this.$refs.container.children[i], i === this.mid);
 
                 if (i < this.mid) {
                     this.$refs.container.children[i].className = 'left';
@@ -112,32 +122,30 @@ export default {
             }
             this.$refs.container.children[this.mid - 1].classList.add('top');
             this.$refs.container.children[this.mid + 1].classList.add('top');
+
+            setInterval(() => {
+                if (!this.hover)
+                    this.clickImg(this.checkBorder(this.mid + 1));
+                this.hover = false;
+            }, 3000);
         });
     }
 }
 </script>
 
 <template>
-    <p>鼠标滚轮滑动或点击两侧图片轮播</p>
-    <div ref="container">
-        <img v-for="(src, index) in source" :src="src" :key="index" @click="clickImg(index)"
-            @wheel="wheelImg" />
+    <div ref="container" @mouseover="hover = true" @mouseleave="hover = false">
+        <img v-for="(src, index) in source" :src="src" :key="index" @click="clickImg(index)" @wheel.prevent="wheelImg" />
     </div>
 </template>
 
 <style scoped>
-p {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 100px;
-}
 
 div {
     position: absolute;
-    width: 50%;
-    height: 30%;
+    width: 1000px;
+    height: 300px;
     left: 50%;
-    top: 35%;
     transform: translate(-50%, -50%);
     outline: 3px solid gray;
     border-radius: 15px;
@@ -150,25 +158,29 @@ img {
     outline: 3px solid gray;
     position: absolute;
     border-radius: 15px;
-    transition: transform 1s, filter 1s, width 1s, height 1s;
+    transition: all 1s;
     z-index: 0;
 }
 
 img.top {
+    z-index: 7;
+}
+
+img.second {
     z-index: 1;
 }
 
 img.mid {
-    z-index: 5
+    z-index: 15;
 }
 
 img.left {
-    transform: translate(-15vw, 0);
+    transform: translate(-300px, 0);
     filter: blur(2px);
 }
 
 img.right {
-    transform: translate(15vw, 0);
+    transform: translate(300px, 0);
     filter: blur(2px);
 }
 </style>
