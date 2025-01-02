@@ -20,6 +20,7 @@ export default {
     },
     methods: {
         setSize(el, mid = False) {
+            el.removeAttribute('style');
             if (el.naturalHeight > el.naturalWidth) {
                 el.style.height = mid ? '180%' : '120%';
             }
