@@ -94,7 +94,8 @@ export default {
             // if (fetch(`./src/assets/${i}.jpg`).status === 404) {
             //     continue;
             // }
-            this.source.push(`./src/assets/${this.prefix}/${i}.jpg`);
+            let imgURL = new URL(`../assets/${this.prefix}/${i}.jpg`, import.meta.url);
+            this.source.push(imgURL.href);
         }
         if (this.source.length === 1) {
             this.source.push(this.source[0]);
