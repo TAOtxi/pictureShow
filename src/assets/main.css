@@ -4,3 +4,7 @@
     padding: 0;
     user-select: none;
 }
+
+body {
+    background: linear-gradient(to right, rgb(18, 194, 233), rgb(196, 113, 237), rgb(246, 79, 89));
+}

@@ -10,10 +10,6 @@ export default {
             type: Number,
             required: true
         },
-        top: {
-            type: String,
-            required: true,
-        }
     },
     data() {
         return {
@@ -88,8 +84,6 @@ export default {
         }
     },
     mounted() {
-        this.$refs.container.style.top = `${this.top}px`;
-
         for (let i = 0; i < this.picutre_counts; i++) {
             // if (fetch(`./src/assets/${i}.jpg`).status === 404) {
             //     continue;
@@ -143,12 +137,10 @@ export default {
 <style scoped>
 
 div {
-    position: absolute;
+    position: relative;
     width: 1000px;
     height: 300px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    outline: 3px solid gray;
+    /* outline: 3px solid gray; */
     border-radius: 15px;
     display: flex;
     justify-content: center;
