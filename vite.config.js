@@ -17,4 +17,5 @@ export default defineConfig({
     },
     //base: 'https://cnb.cool/taotxi/PictureShow/-/git/raw/page/',
     //base: '/pic/',
+    base: '/pictureShow/',
 })
