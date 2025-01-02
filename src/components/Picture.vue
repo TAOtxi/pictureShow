@@ -130,7 +130,8 @@ export default {
 
 <template>
     <div ref="container" @mouseover="hover = true" @mouseleave="hover = false">
-        <img v-for="(src, index) in source" :src="src" :key="index" @click="clickImg(index)" @wheel.prevent="wheelImg" />
+        <img v-for="(src, index) in source" :src="src" :key="index" style="width: 30%;"
+            @click="clickImg(index)" @wheel.prevent="wheelImg" />
     </div>
 </template>
 
@@ -153,9 +154,6 @@ img {
     border-radius: 15px;
     transition: all 1s;
     z-index: 0;
-
-    /* default size */
-    width: 30%;
 }
 
 img.top {
