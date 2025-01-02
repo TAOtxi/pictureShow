@@ -11,6 +11,14 @@ export default {
         }
     },
     methods: {
+        handleWheel(e) {
+            if (e.deltaY > 0) {
+                this.$refs.header.classList.add('hidden');
+            }
+            else {
+                this.$refs.header.classList.remove('hidden');
+            }
+        }
     },
     mounted() {
         setInterval(() => {
@@ -31,7 +39,7 @@ export default {
 </script>
 
 <template>
-    <div id="header" ref="header">
+    <div id="header" ref="header" @wheel.prevent="handleWheel">
         <h1>番薯德，一个充满未知的人形生物</h1>
         <img class="head-img" src="./assets/fanshude.jpg">
         <img class="down" src="./assets/down.svg" @click="$refs.header.classList.toggle('hidden')">
@@ -83,12 +91,17 @@ img.head-img {
 }
 
 img.down {
+    transition: all 1.5s;
     width: 80px;
     position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     cursor: pointer;
+}
+
+div#header.hidden img.down {
+    transform: translateX(-50%) scaleY(-1);
 }
 
 div.container {

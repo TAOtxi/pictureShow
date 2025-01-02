@@ -153,6 +153,9 @@ img {
     border-radius: 15px;
     transition: all 1s;
     z-index: 0;
+
+    /* default size */
+    width: 30%;
 }
 
 img.top {
