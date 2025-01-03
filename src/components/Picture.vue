@@ -19,15 +19,6 @@ export default {
         }
     },
     methods: {
-        setSize(el, mid = False) {
-            el.removeAttribute('style');
-            if (el.naturalHeight > el.naturalWidth) {
-                el.style.height = mid ? '180%' : '120%';
-            }
-            else {
-                el.style.width = mid ? '45%' : '30%';
-            }
-        },
         checkBorder(index) {
             if (index < 0)
                 return this.source.length + index;
@@ -37,9 +28,40 @@ export default {
 
             return index;
         },
+        EnlargeImg(index) {
+            const background = document.createElement('div');
+            const img = document.createElement('img');
+            background.style = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 100;
+            `;
+            img.src = this.source[index];
+
+            img.style = `
+                outline: 3px solid gray;
+                border-radius: 15px;
+                cursor: pointer;
+                max-width: 60%;
+                max-height: 90%;
+            `;
+            background.appendChild(img);
+            document.body.appendChild(background);
+            background.onclick = () => document.body.removeChild(background);
+            background.onwheel = (event) => event.preventDefault();
+        },
         clickImg(index) {
-            if (index === this.mid)
+            if (index === this.mid) {
+                this.EnlargeImg(index);
                 return;
+            }
 
             let leftIndex = this.checkBorder(this.mid - 1);
             let rightIndex = this.checkBorder(this.mid + 1);
@@ -74,9 +96,7 @@ export default {
                 this.$refs.container.children[rightIndex].classList.remove('top');
                 this.$refs.container.children[this.checkBorder(index - 1)].classList.add('top');
             }
-            this.setSize(this.$refs.container.children[this.mid], false);
             this.$refs.container.children[index].className = 'mid';
-            this.setSize(this.$refs.container.children[index], true);
             this.mid = index;
         },
         wheelImg(event) {
@@ -104,8 +124,6 @@ export default {
 
         this.$nextTick(() => {
             for (let i = 0; i < this.source.length; i++) {
-                this.$refs.container.children[i].onload = () => this.setSize(this.$refs.container.children[i], i === this.mid);
-
                 if (i < this.mid) {
                     this.$refs.container.children[i].className = 'left';
                 }
@@ -131,13 +149,12 @@ export default {
 
 <template>
     <div ref="container" @mouseover="hover = true" @mouseleave="hover = false">
-        <img v-for="(src, index) in source" :src="src" :key="index" style="width: 30%;"
-            @click="clickImg(index)" @wheel.prevent="wheelImg" />
+        <img v-for="(src, index) in source" :src="src" :key="index" @click="clickImg(index)"
+            @wheel.prevent="wheelImg" />
     </div>
 </template>
 
 <style scoped>
-
 div {
     position: relative;
     width: 1000px;
@@ -155,6 +172,8 @@ img {
     border-radius: 15px;
     transition: all 1s;
     z-index: 0;
+    max-width: 30%;
+    max-height: 120%;
 }
 
 img.top {
@@ -167,6 +186,8 @@ img.second {
 
 img.mid {
     z-index: 15;
+    cursor: pointer;
+    transform: scale(1.5);
 }
 
 img.left {
