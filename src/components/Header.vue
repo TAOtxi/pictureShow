@@ -56,9 +56,9 @@ div#header.hidden {
 }
 
 h1 {
-    transition: all 1.5s;
+    transition: transform 1.5s;
     padding: 20px;
-    font-size: 80px;
+    font-size: max(40px, 4.5vw);
     width: 100%;
     top: 50px
 }
@@ -81,8 +81,7 @@ div#header.hidden h1 {
 }
 
 img.head-img {
-    transition: all 1.5s;
-    width: 400px;
+    width: max(100px, 20vw);
     margin: 20px;
     border-radius: 15px;
     outline: 5px solid gray;
@@ -91,10 +90,10 @@ img.head-img {
 
 @keyframes translateY {
     0% {
-        transform: translateY(0%);
+        transform: translateY(0);
     }
     100% {
-        transform: translateY(-200%);
+        transform: translateY(-1000px);
     }
 }
 

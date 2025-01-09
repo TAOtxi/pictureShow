@@ -10,6 +10,10 @@ export default {
             type: Number,
             required: true
         },
+        width: {
+            type: Number,
+            default: 1000
+        },
     },
     data() {
         return {
@@ -70,13 +74,13 @@ export default {
                 return;
             }
 
-            let direction = index === leftIndex ? 'left' : 'right';
-
+            let bottomIndex;
+            let direction = index === leftIndex ? -1 : 1;
             // Click on the right image
-            if (direction === 'right') {
+            if (direction === 1) {
                 this.$refs.container.children[this.mid].className = 'left top';
 
-                let bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2));
+                bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2));
                 this.$refs.container.children[bottomIndex].className = 'right';
 
                 this.$refs.container.children[this.checkBorder(leftIndex - 1)].classList.remove('second');
@@ -88,7 +92,7 @@ export default {
             else {
                 this.$refs.container.children[this.mid].className = 'right top';
 
-                let bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2) - 1);
+                bottomIndex = this.checkBorder(this.mid - parseInt(this.source.length / 2) - 1);
                 this.$refs.container.children[bottomIndex].className = 'left';
 
                 this.$refs.container.children[this.checkBorder(rightIndex + 1)].classList.remove('second');
@@ -102,9 +106,13 @@ export default {
         wheelImg(event) {
             let index = event.deltaY > 0 ? this.checkBorder(this.mid + 1) : this.checkBorder(this.mid - 1);
             this.clickImg(index);
+        },
+        handleMouseOver() {
+            this.hover = true;
         }
     },
     mounted() {
+        this.$refs.container.style.width = `min(${this.width}px, 90vw)`;
         for (let i = 0; i < this.picutre_counts; i++) {
             // if (fetch(`./src/assets/${i}.jpg`).status === 404) {
             //     continue;
@@ -140,7 +148,6 @@ export default {
             setInterval(() => {
                 if (!this.hover)
                     this.clickImg(this.checkBorder(this.mid + 1));
-                this.hover = false;
             }, 3000);
         });
     }
@@ -148,7 +155,7 @@ export default {
 </script>
 
 <template>
-    <div ref="container" @mouseover="hover = true" @mouseleave="hover = false">
+    <div ref="container" @mouseenter="hover = true" @mouseleave="hover = false">
         <img v-for="(src, index) in source" :src="src" :key="index" @click="clickImg(index)"
             @wheel.prevent="wheelImg" />
     </div>
@@ -157,8 +164,7 @@ export default {
 <style scoped>
 div {
     position: relative;
-    width: 1000px;
-    height: 300px;
+    aspect-ratio: 1000 / 300;
     /* outline: 3px solid gray; */
     border-radius: 15px;
     display: flex;
@@ -167,9 +173,9 @@ div {
 }
 
 img {
-    outline: 3px solid gray;
+    outline: 0.2vw solid gray;
     position: absolute;
-    border-radius: 15px;
+    border-radius: 1vw;
     transition: all 1s;
     z-index: 0;
     max-width: 30%;
@@ -186,17 +192,20 @@ img.second {
 
 img.mid {
     z-index: 15;
-    cursor: pointer;
-    transform: scale(1.5);
+    cursor: zoom-in;
+    transform: translateX(-50%) scale(1.5);
+    left: 50%;
 }
 
 img.left {
-    transform: translate(-300px, 0);
+    left: 20%;
     filter: blur(2px);
+    translate: -50%;
 }
 
 img.right {
-    transform: translate(300px, 0);
+    left: 80%;
+    transform: translateX(calc(50% - 100%));
     filter: blur(2px);
 }
 </style>
